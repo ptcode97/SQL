@@ -58,9 +58,54 @@ GROUP BY CustomerID
 ORDER BY count DESC
 
 
-/* Find the albums with 12 or more tracks. */
+/* Finding the albums with 12 or more tracks. */
 
 SELECT COUNT(*) as count
 FROM Tracks
 GROUP BY ALBUMID
 HAVING count >=12 
+
+
+
+/* How many albums does the artist Led Zeppelin have?  */
+
+SELECT COUNT(*) as counts
+FROM artists INNER JOIN albums
+ON artists.ArtistId=albums.ArtistId
+WHERE artists.Name='Led Zeppelin'
+
+
+/*  Create a list of album titles and the unit prices for the artist "Audioslave".   */
+
+SELECT Title, UnitPrice 
+FROM tracks INNER JOIN albums ON albums.Albumid = tracks.Albumid
+WHERE tracks.Albumid IN ( SELECT Albumid 
+                  FROM albums 
+                  WHERE ArtistId IN (SELECT ArtistId 
+                                      FROM artists
+                                      WHERE Name = 'Audioslave'))
+                                     
+
+/*  Finding the first and last name of any customer who does not have an invoice. Are there any customers returned from the query?  (No)  */
+
+SELECT FirstName,LastName
+FROM customers
+WHERE CustomerId  NOT IN (SELECT CustomerId 
+                          FROM invoices)
+                                     
+
+/*  Finding the total price for each album.    */
+
+SELECT Title ,SUM(UnitPrice)
+FROM tracks INNER JOIN albums ON albums.Albumid = tracks.Albumid
+GROUP BY tracks.AlbumID
+                                     
+                                     
+
+/*   How many records are created when you apply a Cartesian join to the invoice and invoice items table    */
+                                     
+SELECT COUNT(*)
+FROM invoices CROSS JOIN invoice_items
+
+
+
